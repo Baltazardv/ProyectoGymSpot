@@ -1,273 +1,725 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Los mejores gimnasios de Chilpancingo.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="./assets/css/normalize.css">
-  <link rel="stylesheet" href="./font-awesome/css/all.css">
-  <link href="./assets/css/main.css" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/css/animate.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSpot | Los Mejores Gimnasios de Chilpancingo</title>
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts para el estilo Manga/Anime -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Bangers&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome (Iconos Online) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+        /* --- Configuración del Tema Manga/Anime con Colores de Marca --- */
+        :root {
+            --primary-orange: #F05E28;
+            --accent-red: #D83131;
+            --dark-gray: #2c2c2c;
+            --light-gray: #F3F4F6;
+            --star-gold: #FFC700;
+            --manga-font: 'Dela Gothic One', cursive;
+            --logo-font: 'Bangers', cursive;
+        }
+
+        body {
+            font-family: var(--manga-font);
+            background-image: url('./assets/images/fondoPag.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: var(--light-gray);
+        }
+        
+        #main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(44, 44, 44, 0.85); /* Header más oscuro para contraste */
+            backdrop-filter: blur(10px);
+            border-bottom: 4px solid var(--primary-orange);
+            transition: all 0.4s ease-in-out;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            height: 100px; /* Altura fija para más visibilidad */
+        }
+        
+        #main-header.scrolled {
+            height: 80px; /* Altura al encogerse */
+        }
+
+        #main-header.scrolled .exercise-character {
+            transform: scale(0.8);
+        }
+
+        .exercise-track {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .exercise-character {
+            position: absolute;
+            height: 80%;
+            top: 10%;
+            will-change: transform;
+            transition: transform 0.4s ease-in-out;
+            transform-origin: bottom;
+        }
+        .exercise-character svg {
+            height: 100%;
+            width: auto;
+            display: none;
+            fill: white;
+        }
+        .exercise-character svg.active {
+            display: block;
+        }
+        @keyframes lifting {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pushup {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+        .lift-anim { animation: lifting 1s infinite ease-in-out; }
+        .pushup-anim { animation: pushup 0.8s infinite ease-in-out; }
+
+
+        .main-logo-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        @keyframes ki-base-glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 8px var(--primary-orange)) drop-shadow(4px 4px 2px rgba(0,0,0,0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 16px var(--primary-orange)) drop-shadow(4px 4px 2px rgba(0,0,0,0.6));
+            }
+        }
+
+        @keyframes electric-shake {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            20% { transform: translate(-2px, 1px) rotate(-1deg); }
+            40% { transform: translate(2px, -1px) rotate(1deg); }
+            60% { transform: translate(-1px, 2px) rotate(0deg); }
+            80% { transform: translate(1px, -2px) rotate(1deg); }
+        }
+        
+        .main-logo-img {
+            animation: ki-base-glow 2s infinite ease-in-out;
+            transition: transform 0.2s ease;
+        }
+
+        .main-logo-container:hover .main-logo-img {
+            animation: ki-base-glow 1.5s infinite ease-in-out, electric-shake 0.2s infinite linear;
+        }
+
+        .lightning-bolt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, white, var(--primary-orange), white, transparent);
+            opacity: 0;
+            transform-origin: center;
+        }
+
+        .is-exploding .lightning-bolt {
+            animation: ki-explosion 0.4s ease-out forwards;
+        }
+
+        @keyframes ki-explosion {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotate(var(--angle)) scale(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) rotate(var(--angle)) scale(3);
+            }
+        }
+        
+        .manga-text-outline {
+            color: var(--primary-orange);
+            text-shadow: 
+                -2px -2px 0 var(--dark-gray), 2px -2px 0 var(--dark-gray),
+                -2px 2px 0 var(--dark-gray), 2px 2px 0 var(--dark-gray),
+                3px 3px 0px rgba(0,0,0,0.5);
+            line-height: 1.1;
+        }
+        
+        .card-title {
+             color: var(--dark-gray);
+             text-shadow: 1px 1px 0px var(--primary-orange);
+        }
+
+        .card {
+            border: 3px solid var(--dark-gray);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 8px 8px 0 var(--dark-gray);
+        }
+
+        .btn-manga {
+            font-family: var(--manga-font);
+            background-color: var(--primary-orange);
+            color: white;
+            border: 3px solid var(--dark-gray);
+            box-shadow: 4px 4px 0 var(--dark-gray);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-shadow: 2px 2px 0 var(--dark-gray);
+        }
+
+        .btn-manga:hover, .btn-manga.active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--dark-gray);
+            background-color: var(--accent-red);
+        }
+        
+        .btn-manga:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 var(--dark-gray);
+        }
+        
+        .rating {
+            cursor: pointer;
+        }
+        .rating i {
+            color: var(--star-gold);
+            -webkit-text-stroke: 1.5px var(--dark-gray);
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        .address-link:hover, .address-link:active {
+            color: var(--star-gold);
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-orange);
+            color: white;
+            font-size: 24px;
+            border: 3px solid var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1) rotate(10deg);
+            background-color: var(--accent-red);
+            color: white;
+        }
+    </style>
 </head>
 
-<body>
-  <!-- Aquí va el comentario-->
-  <div class="container">
-    <div class="content animate__animated animate__fadeInDown">
-      <header>
-        <h1 class="logo"><img src="./assets/images/logo-gymspot.png"></h1>
-        <h3 class="title">Elige tu próximo destino de entrenamiento en Chilpancingo.</h3>
-      </header>
-      <table class="table">
-        <div class="containerx">
-          <span class="circle"><button class="btn-ordenar" onclick="ordenarPorCalificacion('asc')"><i
-                class="fa-regular fa-star"></i><i class="fa-solid fa-circle-down"></i></button>
-            <button class="btn-ordenar" onclick="ordenarPorCalificacion('desc')"><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-circle-up"></i></button></span>
-        </div>
-        <thead>
-          <th><i class="fa-solid fa-dumbbell"></i>Gym<i class="fa-solid fa-dumbbell"></i></th>
-          <th>Nombre</th>
-          <th>Ubicación</th>
-          <th>
-            Calificación
-          </th>
-          <th>Acciones</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td><img src="./assets/logos/logoAtleticoAmericano.jpg" class="logo-image"
-                alt="Gimansio Atlético Américano"></td>
-            <td>Gimnasio Atlético Américano</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/VpYX9kU16r8jhMep8'"> <i
-                class="fa-solid fa-location-dot"></i> Av. Juan N.
-              Álvarez Sur no. 17, Centro.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/sensei.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoHispanoGym.jpg" class="logo-image" alt="Hispano Gym"></td>
-            <td>Hispano Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/pL7DSvWryTDgEkWc9'"> <i
-                class="fa-solid fa-location-dot"></i> ISSSTE 3-S, Ruffo
-              Figueroa.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/hispanogym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoStarlife.png" class="logo-image" alt="StarLife Fitness Gym"></td>
-            <td>StarLife Fitness Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/Udmx85pM8yGYMKKJ7'"> <i
-                class="fa-solid fa-location-dot"></i> Baltazar R. Leyva
-              Mancilla 5, Universal.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star"></i></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/starlife.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoF1rstgym.png" class="logo-image" alt="F1rst Gym"></td>
-            <td>F1rst Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/FnKvwwAgLruiBfQ88'"> <i
-                class="fa-solid fa-location-dot"></i> Lázaro Cárdenas
-              52-Planta Alta, Universal.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/firstgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoLeonesGym.jpg" class="logo-image" alt="Leones Gym"></td>
-            <td>Leones Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/dSnPydtKUZyvUi3QA'"> <i
-                class="fa-solid fa-location-dot"></i> Benito Juárez.
-            </td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i><i
-                class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/leonesgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoAcagym.jpg" class="logo-image" alt="Aca Gym"></td>
-            <td>Aca Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/J9cALasdeoHi59pa9'"> <i
-                class="fa-solid fa-location-dot"></i> Altamirano 19,
-              Margarita Viguri.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i></i><i class="fa-regular fa-star"></i><i
-                class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/acagym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoSpartacus.png" class="logo-image" alt="Gimansio Spartacus"></td>
-            <td>Gimnasio Spartacus</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/RXiCqArJMGfWKiuj6'"> <i
-                class="fa-solid fa-location-dot"></i> Miguel Hidalgo 11,
-              Centro.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/spartacusgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoTnt.jpg" class="logo-image" alt="Gimansio TNT"></td>
-            <td>Gimansio TNT</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/Go5DK4z1MtqFdBac8'"> <i
-                class="fa-solid fa-location-dot"></i> C. Juan Ruiz de
-              Alarcón 2, San Francisco.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/tnt.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoBodyMaster.jpg" class="logo-image" alt="Body Master Fitness Club">
-            </td>
-            <td>Body Master Fitness Club</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/RY1ZHXEg3dXMM54d9'"> <i
-                class="fa-solid fa-location-dot"></i> Lázaro Cárdenas
-              27, Loma Bonita.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/bodymaster.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoFCenter.png" class="logo-image" alt="FC Fitness Center"></td>
-            <td>FC Fitness Center</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/KSNYNkqTMy241b25A'"> <i
-                class="fa-solid fa-location-dot"></i> José Ma. Morelos y
-              Pavón 56, Santa Cruz.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/fcfitnessc.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoAnimalGym.jpg" class="logo-image" alt="Animal Gym"></td>
-            <td>Animal Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/BiyXgZvthkudkk417'"> <i
-                class="fa-solid fa-location-dot"></i> Ignacio Zaragoza
-              99, San Antonio.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-              <i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
-            </td>
-            <td>
-              <a href="./gimnasios/animalgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoVivantGym.jpg" class="logo-image" alt="Vivant Gym"></td>
-            <td>Vivant Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/3nha3Hd5u12ku4L99'"> <i
-                class="fa-solid fa-location-dot"></i> San Francisco.
-            </td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
-            <td>
-              <a href="./gimnasios/vivantgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoSportFit.jpg" class="logo-image" alt="Sport-Fit Gym"></td>
-            <td>Sport-Fit Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/ruaRand9VTZkis9q6'"> <i
-                class="fa-solid fa-location-dot"></i> Zihuatanejo 64,
-              Unidad Guerrerense.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/sportfit.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoZonaFitness.jpg" class="logo-image" alt="Zona Fitness"></td>
-            <td>Zona Fitness</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/4CAfw3UGCxFffp2x6'"> <i
-                class="fa-solid fa-location-dot"></i> C. Juan Ruiz de
-              Alarcón 86, Universal.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/zonafitness.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoCreaGym.jpg" class="logo-image" alt="CREA Gym"></td>
-            <td>CREA Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/QugmLiYaTqmLQ3iU9'"> <i
-                class="fa-solid fa-location-dot"></i> Dr. Gabriel Leyva
-              Alarcón 13, Burocratas.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/creagym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoUamGym.png" class="logo-image" alt="UAM Gym"></td>
-            <td>UAM Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/7H1UKkPCWWCUQyMM7'"> <i
-                class="fa-solid fa-location-dot"></i> Av. René, Lic.
-              René Juárez Cisneros 2, Fracc.villa Moderna, Villa Moderna 1ra y 2da Secc.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/uamgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoExpertGym.jpg" class="logo-image" alt="Expert Gym"></td>
-            <td>Expert Gym</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/M2PgT3oWPNYp1adE6'"> <i
-                class="fa-solid fa-location-dot"></i> Odilon Figueroa
-              15, Lucia Alcocer de Figueroa.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i><i
-                class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/expertgym.html">Más Información</a>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="./assets/logos/logoClubVitality.jpg" class="logo-image" alt="Club Vitality"></td>
-            <td>Club Vitality</td>
-            <td class="ubicacion" onclick="location.href='https://maps.app.goo.gl/2JSuLYDxF1DGy8RS7'"> <i
-                class="fa-solid fa-location-dot"></i> Cuauhtémoc 7,
-              Huicacalli.</td>
-            <td><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i></td>
-            <td>
-              <a href="./gimnasios/clubvitality.html">Más Información</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <script src="./javascript/main.js">
-  </script>
-</body>
+<body class="text-gray-800 pt-[100px]">
 
+    <header id="main-header">
+        <div class="exercise-track">
+            <div class="exercise-character">
+                <svg id="anim-run" class="active" viewBox="0 0 24 24"><path d="M13.5,5.5c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S14.6,5.5,13.5,5.5z M14.9,6.6c-0.3-0.1-0.6,0-0.8,0.2l-1.6,1.9 c-0.2,0.2-0.5,0.3-0.8,0.3H9.5C8.1,9,7,10.1,7,11.5V15h2v-3.5C9,11.2,9.2,11,9.5,11H11l2.1,2.1C13.3,13.3,13.6,13.5,14,13.5h3 c0.6,0,1-0.4,1-1v-2.6c0-0.4-0.2-0.7-0.5-0.9L14.9,6.6z M21,18h-6v-2h3.5c0.8,0,1.5-0.7,1.5-1.5v-1c0-0.8-0.7-1.5-1.5-1.5H14 c-0.4,0-0.8-0.2-1.1-0.4L11,8.9V10H9v-1.5C9,7.1,10.1,6,11.5,6H13l3.5,2.5V11h1.5c1.9,0,3.5,1.6,3.5,3.5v1C23,17.1,22.1,18,21,18z"></path></svg>
+                <svg id="anim-lift" viewBox="0 0 24 24" class="lift-anim"><path d="M12,4c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S13.1,4,12,4z M21,10h-3V7h-2v3h-2v3h2v7h2v-7h3V10z M3,10h3v3H3V10z M5,7H3v3h2V7z"></path></svg>
+                <svg id="anim-pushup" viewBox="0 0 24 24" class="pushup-anim"><path d="M20.5,15.5c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S21.6,15.5,20.5,15.5z M4,14h2v-2c0-1.1-0.9-2-2-2S2,9.9,2,11v3 c0,1.1,0.9,2,2,2h2v-2H4V14z M17,14h-2v-2c0-1.1-0.9-2-2-2s-2,0.9-2,2v3c0,1.1,0.9,2,2,2h2v-2h-2v-1h2V14z"></path></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 max-w-6xl">
+        
+        <div class="text-center mb-8 md:mb-12">
+            <div id="main-logo-container" class="main-logo-container inline-block">
+                <img src="./assets/images/logo-gymspot.png" alt="GymSpot Logo" id="main-logo" class="main-logo-img w-full max-w-lg mx-auto">
+                <div id="lightning-container"></div>
+            </div>
+            <p class="text-xl md:text-2xl font-black mt-4 bg-white/80 backdrop-blur-sm inline-block px-4 py-2 rounded-lg border-2 border-gray-400 manga-text-outline">
+                ¡ELIGE TU PRÓXIMO DESTINO DE ENTRENAMIENTO EN CHILPANCINGO!
+            </p>
+        </div>
+
+        <div class="flex justify-center items-center flex-wrap gap-4 mb-8 bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md border-2 border-gray-400">
+            <span class="font-bold text-lg text-gray-900">ORDENAR POR:</span>
+            <div id="sort-buttons" class="flex gap-3">
+                 <button class="btn-manga text-xl px-4 py-1" onclick="ordenarPorCalificacion('desc')" title="Mejores Calificados">
+                    <i class="fas fa-arrow-up-wide-short"></i> Mejores
+                </button>
+                <button class="btn-manga text-xl px-4 py-1" onclick="ordenarPorCalificacion('asc')" title="Peores Calificados">
+                    <i class="fas fa-arrow-down-wide-short"></i> Peores
+                </button>
+                <button class="btn-manga text-xl px-4 py-1" onclick="restablecerOrden()" title="Reiniciar Orden">
+                    <i class="fas fa-shuffle"></i> Reiniciar
+                </button>
+            </div>
+        </div>
+
+        <div id="gym-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- LISTA DE GIMNASIOS RESTAURADA -->
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoAtleticoAmericano.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Atlético Americano">
+                        <h2 class="card-title text-2xl flex-1">Gimnasio Atlético Americano</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/VpYX9kU16r8jhMep8" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Av. Juan N. Álvarez Sur no. 17, Centro.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/sensei.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+            
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoHispanoGym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Hispano Gym">
+                        <h2 class="card-title text-2xl flex-1">Hispano Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/pL7DSvWryTDgEkWc9" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>ISSSTE 3-S, Ruffo Figueroa.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/hispanogym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="4">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoStarlife.png" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo StarLife">
+                        <h2 class="card-title text-2xl flex-1">StarLife Fitness Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/Udmx85pM8yGYMKKJ7" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Baltazar R. Leyva Mancilla 5, Universal.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/starlife.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+            
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoF1rstgym.png" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo F1rst Gym">
+                        <h2 class="card-title text-2xl flex-1">F1rst Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/FnKvwwAgLruiBfQ88" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Lázaro Cárdenas 52-Planta Alta, Universal.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/firstgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+            
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="2.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoLeonesGym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Leones Gym">
+                        <h2 class="card-title text-2xl flex-1">Leones Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/dSnPydtKUZyvUi3QA" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Benito Juárez.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/leonesgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="2.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoAcagym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Aca Gym">
+                        <h2 class="card-title text-2xl flex-1">Aca Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/J9cALasdeoHi59pa9" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Altamirano 19, Margarita Viguri.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/acagym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+            
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoSpartacus.png" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Spartacus">
+                        <h2 class="card-title text-2xl flex-1">Gimnasio Spartacus</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/RXiCqArJMGfWKiuj6" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Miguel Hidalgo 11, Centro.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/spartacusgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoTnt.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo TNT">
+                        <h2 class="card-title text-2xl flex-1">Gimnasio TNT</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/Go5DK4z1MtqFdBac8" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>C. Juan Ruiz de Alarcón 2, San Francisco.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/tnt.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+            
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoBodyMaster.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Body Master">
+                        <h2 class="card-title text-2xl flex-1">Body Master Fitness Club</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/RY1ZHXEg3dXMM54d9" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Lázaro Cárdenas 27, Loma Bonita.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/bodymaster.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="4">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoFCenter.png" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo FC Fitness Center">
+                        <h2 class="card-title text-2xl flex-1">FC Fitness Center</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/KSNYNkqTMy241b25A" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>José Ma. Morelos y Pavón 56, Santa Cruz.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/fcfitnessc.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoAnimalGym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Animal Gym">
+                        <h2 class="card-title text-2xl flex-1">Animal Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/BiyXgZvthkudkk417" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Ignacio Zaragoza 99, San Antonio.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/animalgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+             <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoVivantGym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Vivant Gym">
+                        <h2 class="card-title text-2xl flex-1">Vivant Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/3nha3Hd5u12ku4L99" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>San Francisco.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/vivantgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoSportFit.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Sport-Fit Gym">
+                        <h2 class="card-title text-2xl flex-1">Sport-Fit Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/ruaRand9VTZkis9q6" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Zihuatanejo 64, Unidad Guerrerense.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/sportfit.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoZonaFitness.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Zona Fitness">
+                        <h2 class="card-title text-2xl flex-1">Zona Fitness</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/4CAfw3UGCxFffp2x6" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>C. Juan Ruiz de Alarcón 86, Universal.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/zonafitness.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoCreaGym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo CREA Gym">
+                        <h2 class="card-title text-2xl flex-1">CREA Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/QugmLiYaTqmLQ3iU9" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Dr. Gabriel Leyva Alarcón 13, Burocratas.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/creagym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoUamGym.png" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo UAM Gym">
+                        <h2 class="card-title text-2xl flex-1">UAM Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/7H1UKkPCWWCUQyMM7" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Av. René, Lic. René Juárez Cisneros 2, Fracc.villa Moderna.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/uamgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="2.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoExpertGym.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Expert Gym">
+                        <h2 class="card-title text-2xl flex-1">Expert Gym</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/M2PgT3oWPNYp1adE6" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Odilon Figueroa 15, Lucia Alcocer de Figueroa.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/expertgym.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="3.5">
+                <div class="p-5 flex-grow">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="./assets/logos/logoClubVitality.jpg" class="h-20 w-20 rounded-md border-2 border-gray-800 object-cover" alt="Logo Club Vitality">
+                        <h2 class="card-title text-2xl flex-1">Club Vitality</h2>
+                    </div>
+                    <p class="rating text-3xl mb-4">
+                       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star"></i>
+                    </p>
+                    <a href="https://maps.app.goo.gl/2JSuLYDxF1DGy8RS7" target="_blank" class="address-link flex items-center gap-2 text-gray-700 font-bold transition-colors duration-300 mb-6">
+                        <i class="fa-solid fa-location-dot text-xl"></i>
+                        <span>Cuauhtémoc 7, Huicacalli.</span>
+                    </a>
+                </div>
+                <a href="./gimnasios/clubvitality.html" class="btn-manga text-2xl w-full text-center py-2 rounded-none rounded-b-md">Ver Más</a>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="mt-16 border-t-8 border-primary-orange" style="background-color: rgba(240, 94, 40, 0.85); backdrop-filter: blur(10px);">
+        <div class="container mx-auto p-8 max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-5xl text-white mb-2 manga-text-outline" style="--primary-orange: white;">GymSpot</h3>
+                    <p class="text-white font-semibold" style="text-shadow: 2px 2px 0 var(--dark-gray);">Tu guía #1 para encontrar los mejores lugares para entrenar en la ciudad.</p>
+                </div>
+                <div>
+                    <h4 class="text-3xl text-white mb-3 manga-text-outline" style="--primary-orange: white;">Explora</h4>
+                    <ul class="space-y-2 font-semibold text-white" style="text-shadow: 2px 2px 0 var(--dark-gray);">
+                        <li><a href="#" class="hover:text-yellow-300">Añade tu Gimnasio</a></li>
+                        <li><a href="#" class="hover:text-yellow-300">Blog de Fitness</a></li>
+                        <li><a href="#" class="hover:text-yellow-300">Acerca de Nosotros</a></li>
+                        <li><a href="#" class="hover:text-yellow-300">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-3xl text-white mb-3 manga-text-outline" style="--primary-orange: white;">Síguenos</h4>
+                    <div class="flex justify-center md:justify-start gap-4">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-gray-200 mt-8 pt-6 border-t border-gray-600 font-semibold" style="text-shadow: 1px 1px 0 var(--dark-gray);">
+                <p>&copy; 2025 GymSpot. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+
+    <script>
+        let originalOrder;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(Flip);
+            const cards = gsap.utils.toArray(".card");
+            originalOrder = [...cards];
+
+            gsap.from(".main-logo-container", { duration: 1.2, y: -200, scale: 0.5, opacity: 0, ease: "bounce.out", delay: 0.2 });
+            gsap.from(cards, { opacity: 0, y: 50, duration: 0.8, stagger: 0.1, ease: "power3.out", delay: 0.8 });
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => gsap.to(card, { y: -10, rotation: 1, duration: 0.3, ease: 'power2.out' }));
+                card.addEventListener('mouseleave', () => gsap.to(card, { y: 0, rotation: 0, duration: 0.3, ease: 'power2.out' }));
+            });
+
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            const ratings = document.querySelectorAll('.rating');
+            const easterEggColors = ['#ff38c8', '#38d9ff', '#a1ff38', '#ff3838'];
+            ratings.forEach(rating => {
+                const stars = rating.querySelectorAll('i');
+                const triggerAnimation = () => {
+                    if (rating.isAnimating) return;
+                    rating.isAnimating = true;
+                    const tl = gsap.timeline({ onComplete: () => rating.isAnimating = false });
+                    stars.forEach((star, index) => {
+                        tl.to(star, { y: -15, rotation: gsap.utils.random(-30, 30), color: () => Math.random() < 0.4 ? gsap.utils.random(easterEggColors) : '#FFC700', duration: 0.2, ease: 'power2.out' }, index * 0.05);
+                        tl.to(star, { y: 0, rotation: 0, color: '#FFC700', duration: 0.4, ease: 'bounce.out' }, ">-0.1");
+                    });
+                };
+                rating.addEventListener('mouseenter', triggerAnimation);
+                rating.addEventListener('click', triggerAnimation);
+            });
+
+            const mainLogoContainer = document.getElementById('main-logo-container');
+            const lightningContainer = document.getElementById('lightning-container');
+            mainLogoContainer.addEventListener('click', () => {
+                if (mainLogoContainer.isExploding) return;
+                mainLogoContainer.isExploding = true;
+                lightningContainer.innerHTML = '';
+                for (let i = 0; i < 12; i++) {
+                    const bolt = document.createElement('div');
+                    bolt.className = 'lightning-bolt';
+                    bolt.style.setProperty('--angle', `${gsap.utils.random(0, 360)}deg`);
+                    lightningContainer.appendChild(bolt);
+                }
+                mainLogoContainer.classList.add('is-exploding');
+                setTimeout(() => {
+                    mainLogoContainer.classList.remove('is-exploding');
+                    mainLogoContainer.isExploding = false;
+                }, 500);
+            });
+
+            const character = document.querySelector('.exercise-character');
+            const exercises = gsap.utils.toArray('.exercise-character svg');
+            let currentExercise = 0;
+            
+            const setExercise = (index) => {
+                exercises.forEach((ex, i) => ex.classList.toggle('active', i === index));
+                exercises[currentExercise].classList.remove('lift-anim', 'pushup-anim');
+                currentExercise = index;
+                if (index === 1) exercises[currentExercise].classList.add('lift-anim');
+                if (index === 2) exercises[currentExercise].classList.add('pushup-anim');
+            };
+
+            const tlHeader = gsap.timeline({ repeat: -1 });
+            tlHeader.fromTo(character, { x: '-10%' }, { x: '110%', duration: 20, ease: 'none' })
+                .call(setExercise, [1], 5)
+                .call(setExercise, [2], 10)
+                .call(setExercise, [0], 15);
+        });
+
+        function ordenarPorCalificacion(direccion) {
+            const list = document.querySelector("#gym-list");
+            const cards = Array.from(list.children);
+            const state = Flip.getState(cards);
+            const sortedCards = cards.sort((a, b) => {
+                const ratingA = parseFloat(a.dataset.rating);
+                const ratingB = parseFloat(b.dataset.rating);
+                return direccion === 'asc' ? ratingA - ratingB : ratingB - ratingA;
+            });
+            sortedCards.forEach(card => list.appendChild(card));
+            Flip.from(state, { duration: 0.7, stagger: 0.05, ease: "power3.inOut", scale: true });
+            document.querySelectorAll('#sort-buttons .btn-manga').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = (direccion === 'asc') ? document.querySelector('button[onclick*="asc"]') : document.querySelector('button[onclick*="desc"]');
+            activeBtn.classList.add('active');
+        }
+
+        function restablecerOrden() {
+            const list = document.querySelector("#gym-list");
+            const cards = Array.from(list.children);
+            const state = Flip.getState(cards);
+            originalOrder.forEach(card => list.appendChild(card));
+            Flip.from(state, { duration: 0.7, stagger: 0.05, ease: "power3.inOut", scale: true });
+            document.querySelectorAll('#sort-buttons .btn-manga').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('button[onclick*="restablecerOrden"]').classList.add('active');
+        }
+    </script>
+</body>
 </html>
