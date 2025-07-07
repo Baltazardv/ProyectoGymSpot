@@ -44,17 +44,26 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            background-color: rgba(44, 44, 44, 0.85); /* Header más oscuro para contraste */
+            background-color: rgba(44, 44, 44, 0.85);
             backdrop-filter: blur(10px);
             border-bottom: 4px solid var(--primary-orange);
             transition: all 0.4s ease-in-out;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            height: 100px; /* Altura fija para más visibilidad */
+            height: 70px; /* Altura base para móvil */
+        }
+        
+        @media (min-width: 768px) { /* md: */
+            #main-header {
+                height: 100px; /* Altura para escritorio */
+            }
         }
         
         #main-header.scrolled {
-            height: 80px; /* Altura al encogerse */
+            height: 60px; /* Altura al encogerse en móvil */
+        }
+        @media (min-width: 768px) { /* md: */
+            #main-header.scrolled {
+                height: 80px; /* Altura al encogerse en escritorio */
+            }
         }
 
         #main-header.scrolled .exercise-character {
@@ -234,7 +243,7 @@
     </style>
 </head>
 
-<body class="text-gray-800 pt-[100px]">
+<body class="text-gray-800 pt-[70px] md:pt-[100px]">
 
     <header id="main-header">
         <div class="exercise-track">
@@ -250,24 +259,24 @@
         
         <div class="text-center mb-8 md:mb-12">
             <div id="main-logo-container" class="main-logo-container inline-block">
-                <img src="./assets/images/logo-gymspot.png" alt="GymSpot Logo" id="main-logo" class="main-logo-img w-full max-w-lg mx-auto">
+                <img src="./assets/images/logo-gymspot.png" alt="GymSpot Logo" id="main-logo" class="main-logo-img w-full max-w-md md:max-w-lg mx-auto">
                 <div id="lightning-container"></div>
             </div>
-            <p class="text-xl md:text-2xl font-black mt-4 bg-white/80 backdrop-blur-sm inline-block px-4 py-2 rounded-lg border-2 border-gray-400 manga-text-outline">
+            <p class="text-lg md:text-2xl font-black mt-4 bg-white/80 backdrop-blur-sm inline-block px-4 py-2 rounded-lg border-2 border-gray-400 manga-text-outline">
                 ¡ELIGE TU PRÓXIMO DESTINO DE ENTRENAMIENTO EN CHILPANCINGO!
             </p>
         </div>
 
-        <div class="flex justify-center items-center flex-wrap gap-4 mb-8 bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md border-2 border-gray-400">
-            <span class="font-bold text-lg text-gray-900">ORDENAR POR:</span>
-            <div id="sort-buttons" class="flex gap-3">
-                 <button class="btn-manga text-xl px-4 py-1" onclick="ordenarPorCalificacion('desc')" title="Mejores Calificados">
+        <div class="flex justify-center items-center flex-wrap gap-2 md:gap-4 mb-8 bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md border-2 border-gray-400">
+            <span class="font-bold text-base md:text-lg text-gray-900">ORDENAR:</span>
+            <div id="sort-buttons" class="flex gap-2 md:gap-3">
+                 <button class="btn-manga text-lg md:text-xl px-3 py-1" onclick="ordenarPorCalificacion('desc')" title="Mejores Calificados">
                     <i class="fas fa-arrow-up-wide-short"></i> Mejores
                 </button>
-                <button class="btn-manga text-xl px-4 py-1" onclick="ordenarPorCalificacion('asc')" title="Peores Calificados">
+                <button class="btn-manga text-lg md:text-xl px-3 py-1" onclick="ordenarPorCalificacion('asc')" title="Peores Calificados">
                     <i class="fas fa-arrow-down-wide-short"></i> Peores
                 </button>
-                <button class="btn-manga text-xl px-4 py-1" onclick="restablecerOrden()" title="Reiniciar Orden">
+                <button class="btn-manga text-lg md:text-xl px-3 py-1" onclick="restablecerOrden()" title="Reiniciar Orden">
                     <i class="fas fa-shuffle"></i> Reiniciar
                 </button>
             </div>
@@ -275,7 +284,7 @@
 
         <div id="gym-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <!-- LISTA DE GIMNASIOS RESTAURADA -->
+            <!-- LISTA DE GIMNASIOS COMPLETA -->
             <div class="card rounded-lg overflow-hidden flex flex-col" data-rating="5">
                 <div class="p-5 flex-grow">
                     <div class="flex items-start gap-4 mb-4">
